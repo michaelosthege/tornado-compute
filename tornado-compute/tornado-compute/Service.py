@@ -4,32 +4,35 @@ from __future__ import print_function
 import tornado.web
 import tornado.gen
 import asyncio
-import ComputationBroker
-import uuid
+import broker
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
-broker = None
+computationBroker = None
 
 
 class Computor(tornado.web.RequestHandler):
     """Computor API"""
     @tornado.gen.coroutine
     def get(self):
-        key = str(uuid.uuid4())                     # unique key that identified the computation task
-        logging.info("{0} accepted".format(key))
-        result = yield broker.processAsync(key)     # asynchronously waits until the second process finishes computation
-        self.write(result)
+        call = broker.AsyncCall("uppercase", text="blabla")
+        response = yield computationBroker.processAsync(call)     # asynchronously waits until the second process finishes computation
+        self.write("success: {0}</br>result: {1}".format(response.Success, response.Result))
 
 
 endpoints = {
     r"/": Computor
 }
 
+def makeProcessor():
+    """Will be executed from the secondary process. Imports and constructs the computation environment."""
+    import Processor
+    processor = Processor.Processor()
+    return processor
 
 if __name__ == '__main__':
     print("Starting computation broker...")
-    broker = ComputationBroker.ComputationBroker()
+    computationBroker = broker.ComputationBroker(makeProcessor)
 
     print("Starting service...")
     app = tornado.web.Application([(route, cls) for route,cls in endpoints.items()])

@@ -10,8 +10,8 @@ class Processor(object):
         # prepare for computations. for example load keras models
         return
 
-    def process(self, key):
+    def uppercase(self, text):
         time.sleep(5) # blocking, long-running call
-        return "result of {0}".format(key)
+        return text.upper()
 
 

@@ -22,7 +22,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ComputationBroker.py" />
+    <Compile Include="broker.py" />
     <Compile Include="Processor.py" />
     <Compile Include="Service.py" />
   </ItemGroup>
