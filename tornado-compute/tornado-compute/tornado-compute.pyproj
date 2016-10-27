@@ -22,9 +22,14 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="broker.py" />
+    <Compile Include="dualprocessing\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Processor.py" />
     <Compile Include="Service.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="dualprocessing\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

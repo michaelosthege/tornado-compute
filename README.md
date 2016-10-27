@@ -10,12 +10,12 @@ Sample application for building a tornado-powered webservice that runs blocking 
 + the computation thread/process must be pre-initialized only once (common for deep learning frameworks)
 
 # Solution
-Before the service is started, a ComputationBroker is created. It will run a user-provided constructor on a new thread to create one instance of the Processor. It uses a pipe to wait for incoming requests.
+Before the service is started, a Broker is created. It will run a user-provided constructor on a new thread to create one instance of the Processor. It uses a pipe to wait for incoming requests.
 Each computation/request is indentified by a unique key. When a request comes in, this key is passed through the pipe to the computation process. The computation loop at the other end of the pipe sequentially does the (blocking) calls, while the main thread asynchronously waits for the finished computation key to be returned through the pipe.
 
 **Processor**: instance of a user-provided class that will live on the second process
 
-**ComputationBroker**: handles process creation and asynchronous scheduling/execution
+**Broker**: handles process creation and asynchronous scheduling/execution
 
 **Service**: runs the webserver and remains responsive at all times
 

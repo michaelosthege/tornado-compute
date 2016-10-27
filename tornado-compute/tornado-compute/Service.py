@@ -4,7 +4,7 @@ from __future__ import print_function
 import tornado.web
 import tornado.gen
 import asyncio
-import broker
+import dualprocessing
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
@@ -15,7 +15,7 @@ class Computor(tornado.web.RequestHandler):
     """Computor API"""
     @tornado.gen.coroutine
     def get(self):
-        call = broker.AsyncCall("uppercase", text="blabla")
+        call = dualprocessing.AsyncCall("uppercase", text="blabla")
         response = yield computationBroker.processAsync(call)     # asynchronously waits until the second process finishes computation
         self.write("success: {0}</br>result: {1}".format(response.Success, response.Result))
 
@@ -32,7 +32,7 @@ def makeProcessor():
 
 if __name__ == '__main__':
     print("Starting computation broker...")
-    computationBroker = broker.ComputationBroker(makeProcessor)
+    computationBroker = dualprocessing.Broker(makeProcessor)
 
     print("Starting service...")
     app = tornado.web.Application([(route, cls) for route,cls in endpoints.items()])

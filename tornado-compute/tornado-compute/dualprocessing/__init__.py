@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 from __future__ import print_function
 
-import multiprocessing, asyncio, logging, concurrent.futures, time, uuid, sys, typing
+import multiprocessing, asyncio, logging, concurrent.futures, time, uuid, sys
 
 class AsyncCall(object):
     def __init__(self, targetMethod:str, *args, **kwargs):
@@ -18,7 +18,7 @@ class AsyncResponse(object):
         return
 
 
-class ComputationBroker(object):
+class Broker(object):
     """Handles scheduling and running of computations on a second process."""
 
     def __init__(self, processorConstructor):
@@ -32,7 +32,7 @@ class ComputationBroker(object):
         return
 
     @classmethod
-    def __start__(self, pipeEnd:multiprocessing.connection.PipeConnection, processorConstructor:typing.Callable):
+    def __start__(self, pipeEnd:multiprocessing.connection.PipeConnection, processorConstructor):
         """Instantiates processorConstructor and executes calls on the instance of the processor.
 
         Called from the second process and listens for incoming calls through the pipe.
