@@ -32,7 +32,7 @@ class Broker(object):
         return
 
     @classmethod
-    def __start__(self, pipeEnd:multiprocessing.connection.PipeConnection, processorConstructor):
+    def __start__(self, pipeEnd:multiprocessing.connection.Pipe, processorConstructor):
         """Instantiates processorConstructor and executes calls on the instance of the processor.
 
         Called from the second process and listens for incoming calls through the pipe.
@@ -48,7 +48,7 @@ class Broker(object):
             # get input key
             call, = pipeEnd.recv()
             # process input synchronously
-            logging.info("{0} processing".format(call.Key))
+            logging.info("{0} processing {1}".format(call.Key, call.TargetMethod))
             # execute the said method on the processor
             response = AsyncResponse(call.Key, False, None)
             try:
@@ -90,14 +90,14 @@ class Broker(object):
     
     def processSynchronous(self, call:AsyncCall):
         """(blocking) Schedules a call and checks for a result every 50 ms."""
-        logging.info("{0} scheduled".format(call.Key))
+        logging.info("{0} scheduled  {1}".format(call.Key, call.TargetMethod))
         # add the key to the queue
         self.__ParentEnd__.send((call,))
         # wait for the completion by the subprocess
         while call.Key not in self.FinishedTasks:
             time.sleep(0.05)
         result = self.FinishedTasks.pop(call.Key)
-        logging.info("{0} complete".format(call.Key))
+        logging.info("{0} completed  {1}".format(call.Key, call.TargetMethod))
         return result
 
     
