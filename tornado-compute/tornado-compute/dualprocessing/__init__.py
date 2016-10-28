@@ -27,8 +27,8 @@ class Broker(object):
         childEnd, self.__ParentEnd__ = multiprocessing.connection.Pipe()
         self.__ComputationProcess__ = multiprocessing.Process(target=self.__start__, args=(childEnd,processorConstructor), name="ComputationProcess")
         self.__ComputationProcess__.start()
-        self.ThreadExecuter = concurrent.futures.ThreadPoolExecutor(256)
-        self.ThreadExecuter.submit(self.__receive__)
+        self.ThreadExecutor = concurrent.futures.ThreadPoolExecutor(256)
+        self.ThreadExecutor.submit(self.__receive__)
         return
 
     @classmethod
@@ -76,7 +76,7 @@ class Broker(object):
             print(asyncResponse.Result)
             
         """
-        return self.ThreadExecuter.submit(self.processSynchronous, call)
+        return self.ThreadExecutor.submit(self.processSynchronous, call)
         
     def __receive__(self):
         """Continuously listen for tasks being completed."""
