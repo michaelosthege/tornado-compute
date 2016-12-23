@@ -6,12 +6,13 @@ import time, logging
 
 class Processor(object):
     """Takes care of running computations."""
-    def __init__(self):
+    def __init__(self, name):
         # prepare for computations. for example load keras models
+        self.name = name
         return
 
     def uppercase(self, text):
         time.sleep(5) # blocking, long-running call
-        return text.upper()
+        return self.name + ": " + text.upper()
 
 

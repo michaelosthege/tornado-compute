@@ -16,7 +16,7 @@ class Computor(tornado.web.RequestHandler):
     @tornado.gen.coroutine
     def get(self):
         call = dualprocessing.AsyncCall("uppercase", text="blabla")
-        response = yield computationBroker.processAsync(call)     # asynchronously waits until the second process finishes computation
+        response = yield computationBroker.submit_call_async(call)     # asynchronously waits until the second process finishes computation
         self.write("success: {0}</br>result: {1}".format(response.Success, response.Result))
 
 
@@ -24,15 +24,15 @@ endpoints = {
     r"/": Computor
 }
 
-def makeProcessor():
+def makeProcessor(name):
     """Will be executed from the secondary process. Imports and constructs the computation environment."""
     import Processor
-    processor = Processor.Processor()
+    processor = Processor.Processor(name)
     return processor
 
 if __name__ == '__main__':
     print("Starting computation broker...")
-    computationBroker = dualprocessing.Broker(makeProcessor)
+    computationBroker = dualprocessing.Broker(makeProcessor, "Merlin")   # *args and **kwargs can be passed to the constructor!
 
     print("Starting service...")
     app = tornado.web.Application([(route, cls) for route,cls in endpoints.items()])
@@ -42,7 +42,9 @@ if __name__ == '__main__':
 
     print("WARNING: Do not use multiple tabs in the same browser to test! The browser will delay sending of the second request until the first one returned!")
     print("Reference: http://www.tornadoweb.org/en/stable/faq.html")
-        
+    
     tornado.ioloop.IOLoop.current().start()
 
     print("Ended.")
+
+    

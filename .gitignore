@@ -242,3 +242,4 @@ ModelManifest.xml
 .fake/
 /tornado-compute/tornado-compute/__pycache__
 /tornado-compute/tornado-compute/dualprocessing/__pycache__
+/tornado-compute/__pycache__

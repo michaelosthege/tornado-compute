@@ -7,7 +7,8 @@ Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "tornado-compute", "tornado-
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A3749824-A42D-421B-8019-B623398B7AB6}"
 	ProjectSection(SolutionItems) = preProject
-		..\README.md = ..\README.md
+		LICENSE = LICENSE
+		README.md = README.md
 	EndProjectSection
 EndProject
 Global

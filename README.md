@@ -1,6 +1,13 @@
 # Summary
 Sample application for building a tornado-powered webservice that runs blocking calls sequentially on a second process. Handlers of the webservice remain asynchronous, therefore many requests can be accepted in parallel.
 
+# Requirements
+Scheduling and interaction between the first (frontend) and second (computation backend) process is done with the [`dualprocessing` module](https://github.com/michaelosthege/dualprocessing).
+
+```bash
+pip install dualprocessing
+```
+
 # Scenario
 + you want to accepts many requests in parallel
 + backend calls are slow (fine for the client, but unacceptable for the server)
