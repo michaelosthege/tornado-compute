@@ -5,15 +5,15 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>f30d7c17-4aca-44b2-9d02-4a051c8645c2</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Service.py</StartupFile>
+    <StartupFile>StartService.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <Name>tornado-compute</Name>
     <RootNamespace>tornado-compute</RootNamespace>
-    <InterpreterId>{9a7a9026-48c1-4688-9d5d-e5699d47d074}</InterpreterId>
-    <InterpreterVersion>3.5</InterpreterVersion>
+    <InterpreterId>{28085f33-0924-4a56-ac99-d7c0ecc39d35}</InterpreterId>
+    <InterpreterVersion>3.4</InterpreterVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -24,11 +24,18 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Processor.py" />
-    <Compile Include="Service.py" />
+    <Compile Include="Pipeline.py" />
+    <Compile Include="StartService.py" />
   </ItemGroup>
   <ItemGroup>
-    <InterpreterReference Include="{9a7a9026-48c1-4688-9d5d-e5699d47d074}\3.5" />
+    <InterpreterReference Include="{28085f33-0924-4a56-ac99-d7c0ecc39d35}\3.4" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="templates\vgg.html" />
+    <Content Include="templates\index.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="templates\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
