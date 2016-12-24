@@ -4,7 +4,7 @@ Sample application for building a [**`tornado`**](http://www.tornadoweb.org/)-po
 ## What this is
 A primer to show you how to serve any *Keras* model as a webservice. Here we take VGG-16, but any other model works fine too.
 
-This will show you how to deploy your neural network to a webservice **without writing a single line of C++**. Here are a few reasons why you'd **not** want to do that with C++:
+Most importantly, we will achieve this **without writing a single line of C++**. Here are a few reasons why you'd **not** want to do this with C++:
 + cross-platform compatibility
 + combination with `skimage`, `sklearn` or any other Python modules
 + develop and deploy with the same language
@@ -23,8 +23,6 @@ This tutorial assumes that you...
 + you want to keep using Python for deployment
 
 Now there are some things you probably don't have installed yet. But don't worry, you can install them via `pip`:
-
-Fortunately you can install these via `pip`:
 
 ```bash
 pip install tornado
