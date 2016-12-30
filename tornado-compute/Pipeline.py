@@ -21,7 +21,7 @@ class Pipeline(object):
         download_from : str
             fallback-url to download the VGG-16 weights
         """
-        # 
+        # load the model
         self.VGG = self.get_vgg(weights_path, download_from)
         return
 

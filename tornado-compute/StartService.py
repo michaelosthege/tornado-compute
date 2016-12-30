@@ -25,8 +25,8 @@ class VGG(tornado.web.RequestHandler):
     def post(self):
         try:
             url = self.get_argument("url", None)
-            if (not url):   # take a default red panda image
-                url = "https://farm6.staticflickr.com/5571/31110991010_489970cc12_z_d.jpg"
+            if (not url):   # take a default image
+                url = "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Serpent_roi_bandes_grises_01.JPG/300px-Serpent_roi_bandes_grises_01.JPG"
             call = dualprocessing.AsyncCall("predict", url=url)
             response = yield computationBroker.submit_call_async(call)
             if (response.Success):

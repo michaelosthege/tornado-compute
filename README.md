@@ -64,9 +64,105 @@ After you have completed this checklist, just run `StartService.py` as shown bel
 python StartService.py
 ```
 
+It should look something like this:
+![console screenshot](screenshot_console.png)
+
+
 Now you can point your browser to [http://localhost:2017/vgg](http://localhost:2017/vgg). 
 
 Alternatively you can POST a URL pointing to an image to http://localhost:2017/vgg
 
 The first time you do this, the VGG model will be compiled to work with CUDA, so expect some delay. Subsequent requests will process within sub-second delays.
 
+# The Code
+Let's take a look at some of the most important lines.
+
+## Webservice
+The endpoints of the webservice are implemented as classes. In the `endpoints` list, we set up at which URL a certain endpoint will be available. This is standard *tornado* practice and in fact very similar to *Flask*.
+
+```python
+endpoints = [
+    (r"/", Landing),
+    (r"/vgg", VGG)
+]
+```
+
+In `StartService.py` we also define a method for initialization of the computation pipeline (that runs the neural net).
+
+```python
+def makePipeline():
+    """Will be executed from the secondary process. Imports and constructs the computation environment."""
+    import Pipeline
+    processor = Pipeline.Pipeline("vgg16_weights.h5")
+    return processor
+```
+
+The `computationBroker` from the `dualprocessing` module will call this on the second thread to create an instance of our computation pipeline.
+
+In the `VGG` endpoint, we accept HTTP GET to serve an HTML template with a simple form. The user can then put a URL into the form and POST it to the `/vgg` endpoint.
+
+The `url` parameter is passed to a `dualprocessing.AsyncCall` object which is submitted to the `computationBroker`.
+
+```python
+class VGG(tornado.web.RequestHandler):
+    """POST a URL of an image to this address to run it through VGG-16."""
+    def get(self):
+        self.render('templates/vgg.html')
+
+    @tornado.gen.coroutine
+    def post(self):
+        try:
+            url = self.get_argument("url", None)
+            if (not url):   # take a default image
+                url = "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Serpent_roi_bandes_grises_01.JPG/300px-Serpent_roi_bandes_grises_01.JPG"
+            call = dualprocessing.AsyncCall("predict", url=url)
+            response = yield computationBroker.submit_call_async(call)
+            if (response.Success):
+                self.write(response.Result)
+            else:
+                raise response.Error
+        except:
+            def lastExceptionString():
+                exc_type, ex, exc_tb = sys.exc_info()
+                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                return "{0} in {1}:{2}".format(ex, fname, exc_tb.tb_lineno)
+            exmsg = lastExceptionString()
+            logging.critical(exmsg)
+            self.write(exmsg)
+```
+
+## Pipeline
+In [`Pipeline.py`](/tornado-compute/blob/master/tornado-compute/Pipeline.py), the model is loaded upon initialization.
+
+*Side Note*: The GoogleDrive does not allow hotlinking, so you have to download it manually..
+
+```python
+class Pipeline(object):
+    """Takes care of running computations."""
+    def __init__(self, weights_path="vgg16.hdf5", download_from="https://docs.google.com/uc?id=0Bz7KyqmuGsilT0J5dmRCM0ROVHc&export=download"):
+        """ ... """
+        # load the model
+        self.VGG = self.get_vgg(weights_path, download_from)
+        return
+```
+
+In the `predict` method, images are downloaded and fed to the VGG network:
+
+```python
+    def predict(self, url):
+        ############## Prepare input
+        # download the image
+        filename = "temp" + os.path.splitext(url)[1]
+        urllib.request.urlretrieve(url, filename)
+        # load the image
+        input = buddy.load_and_preprocess_image(filename, 224, True)
+        ############## Predict
+        input_batch = numpy.array([input])
+        prediction = self.VGG.predict(input_batch)[0]
+        ############## Return the ImageNet class label
+        predicted_class = numpy.argmax(prediction)
+        return buddy.IMAGENET_CLASSES[predicted_class]
+```
+
+
+Any questions, comments, improvements left? Feel free to open an issue!
